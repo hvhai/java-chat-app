@@ -8,6 +8,7 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     application
+    java
 }
 
 repositories {
@@ -16,9 +17,13 @@ repositories {
 }
 
 dependencies {
-    // Use JUnit Jupiter for testing.
-    testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
+    // Logging
+    implementation("org.apache.logging.log4j:log4j-api:2.22.1")
+    implementation("org.apache.logging.log4j:log4j-core:2.22.1")
 
+    // Test
+    implementation("org.assertj:assertj-core:3.25.3")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     // This dependency is used by the application.
@@ -40,4 +45,16 @@ application {
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+tasks.register("client", JavaExec::class.java) {
+    group = ApplicationPlugin.APPLICATION_GROUP
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = "com.codehunter.java_chat_app.client.ChatClient"
+}
+
+tasks.register("server", JavaExec::class.java) {
+    group = ApplicationPlugin.APPLICATION_GROUP
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = "com.codehunter.java_chat_app.server.ChatServer"
 }

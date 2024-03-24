@@ -3,12 +3,17 @@
  */
 package com.codehunter.java_chat_app;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class App {
+    public static final Logger log = LogManager.getLogger(App.class);
+
     public String getGreeting() {
         return "Hello World!";
     }
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        log.info(new App().getGreeting());
     }
 }
