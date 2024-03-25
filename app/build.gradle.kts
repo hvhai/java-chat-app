@@ -51,6 +51,8 @@ tasks.register("client", JavaExec::class.java) {
     group = ApplicationPlugin.APPLICATION_GROUP
     classpath = sourceSets.main.get().runtimeClasspath
     mainClass = "com.codehunter.java_chat_app.client.ChatClient"
+    // enable gradle console input https://stackoverflow.com/a/13172566/18859462
+    standardInput = System.`in`
 }
 
 tasks.register("server", JavaExec::class.java) {
