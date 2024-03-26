@@ -60,3 +60,10 @@ tasks.register("server", JavaExec::class.java) {
     classpath = sourceSets.main.get().runtimeClasspath
     mainClass = "com.codehunter.java_chat_app.server.ChatServer"
 }
+
+tasks.register("clientGUI", JavaExec::class.java) {
+    group = ApplicationPlugin.APPLICATION_GROUP
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass = "com.codehunter.java_chat_app.client.ChatClientGUI"
+    standardInput = System.`in`
+}
