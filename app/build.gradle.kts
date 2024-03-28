@@ -17,6 +17,7 @@ repositories {
 }
 
 dependencies {
+    implementation("com.intellij:forms_rt:7.0.3")
     // Logging
     implementation("org.apache.logging.log4j:log4j-api:2.22.1")
     implementation("org.apache.logging.log4j:log4j-core:2.22.1")
@@ -61,9 +62,8 @@ tasks.register("server", JavaExec::class.java) {
     mainClass = "com.codehunter.java_chat_app.server.ChatServer"
 }
 
-tasks.register("clientGUI", JavaExec::class.java) {
+tasks.register("chatGUI", JavaExec::class.java) {
     group = ApplicationPlugin.APPLICATION_GROUP
     classpath = sourceSets.main.get().runtimeClasspath
-    mainClass = "com.codehunter.java_chat_app.client.ChatClientGUI"
-    standardInput = System.`in`
+    mainClass = "com.codehunter.java_chat_app.client.ChatGUI"
 }

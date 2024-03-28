@@ -1,8 +1,6 @@
 package com.codehunter.java_chat_app.client;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 class ChatClientGUI {
 
@@ -14,7 +12,16 @@ class ChatClientGUI {
 
         // Add label
         JLabel label = new JLabel("Hello Swing");
-        frame.getContentPane().add(label);
+        // frame.getContentPane().add(label);
+        frame.add(label);
+
+        var textField = new JTextField();
+        textField.setSize(500, 50);
+        frame.add(textField);
+
+        var button = new JButton("Send");
+        button.setSize(100, 50);
+        frame.add(button);
 
         // Display window
         frame.setVisible(true);
