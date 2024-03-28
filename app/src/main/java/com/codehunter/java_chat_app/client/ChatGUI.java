@@ -2,27 +2,76 @@ package com.codehunter.java_chat_app.client;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
 
 public class ChatGUI {
+    private static final Logger log = LogManager.getLogger(ChatGUI.class);
     private JButton sendButton;
     private JTextField messageTextField;
     private JPanel rootPanel;
     private JLabel label1;
     private JTextArea messageTextArea;
+    private ChatClient chatClient;
+    private final String host;
+    private final int port;
 
-    static void createAndDisplay() {
+    public ChatGUI(String host, int port) throws IOException {
+        this.host = host;
+        this.port = port;
+        this.chatClient = new ChatClient(host, port, this::onMessageReceive);
+        this.chatClient.startListen();
+
+        sendButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                chatClient.sentMessage(messageTextField.getText());
+                messageTextField.setText("");
+            }
+        });
+
+        messageTextField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                super.keyTyped(e);
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    chatClient.sentMessage(messageTextField.getText());
+                    messageTextField.setText("");
+                }
+            }
+        });
+    }
+
+    private void onMessageReceive(String message) {
+        log.info("Receive message: {}", message);
+        SwingUtilities.invokeLater(() -> messageTextArea.append(message + '\n'));
+    }
+
+    static void createAndDisplay() throws IOException {
         JFrame frame = new JFrame("ChatGUI");
-        frame.setContentPane(new ChatGUI().rootPanel);
+        frame.setContentPane(new ChatGUI("localhost", 2000).rootPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(ChatGUI::createAndDisplay);
+
+        SwingUtilities.invokeLater(() -> {
+            try {
+                createAndDisplay();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     {
@@ -56,7 +105,7 @@ public class ChatGUI {
         messageTextArea.setRows(10);
         scrollPane1.setViewportView(messageTextArea);
         sendButton = new JButton();
-        sendButton.setText("Button");
+        sendButton.setText("Sent");
         rootPanel.add(sendButton, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
