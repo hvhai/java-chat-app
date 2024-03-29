@@ -1,32 +1,39 @@
 package com.codehunter.java_chat_app.client;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.UUID;
 import java.util.function.Consumer;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 class ChatClient implements Closeable {
 
     public static final Logger log = LogManager.getLogger(ChatClient.class);
-    private final Socket socket;
     private final Consumer<String> onMessageListener;
-    private final BufferedReader socketReader;
-    private final PrintWriter writer;
+    private Socket socket;
+    private PrintWriter writer;
+    private BufferedReader socketReader;
+    private String username;
 
-    public ChatClient(String host, int port, Consumer<String> onMessageListener) throws IOException {
-        this.socket = new Socket(host, port);
-        this.socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        this.writer = new PrintWriter(socket.getOutputStream(), true);
+    public ChatClient(Consumer<String> onMessageListener) {
         this.onMessageListener = onMessageListener;
     }
 
-    public void startListen() {
+    public void connect(String host, int port, String username) throws IOException {
+        this.username = username;
+        this.socket = new Socket(host, port);
+        this.socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        this.writer = new PrintWriter(socket.getOutputStream(), true);
+        startListen();
+    }
+
+    private void startListen() {
         Runnable runnable = () -> {
             try {
                 String receiveMessage;
@@ -42,15 +49,15 @@ class ChatClient implements Closeable {
     }
 
     public void sentMessage(String message) {
-        writer.println(message);
+        String formatedMessage = String.format("> %s: %s", this.username, message);
+        writer.println(formatedMessage);
     }
 
     public static void main(String[] args) {
 
-        try (var chatClient = new ChatClient("localhost", 2000, System.out::println);){
+        try (var chatClient = new ChatClient(System.out::println);){
+            chatClient.connect("localhost", 2000, UUID.randomUUID().toString());
             log.info("connected");
-            // process to display all message
-            chatClient.startListen();
             // send message to socket
             String line = "";
             try (BufferedReader in = new BufferedReader(new InputStreamReader(System.in));) {
@@ -71,5 +78,9 @@ class ChatClient implements Closeable {
         this.writer.close();
         this.socketReader.close();
         this.socket.close();
+    }
+    
+    public String getUsername() {
+        return this.username;
     }
 }

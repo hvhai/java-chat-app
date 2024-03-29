@@ -1,17 +1,29 @@
 package com.codehunter.java_chat_app.client;
 
-import com.intellij.uiDesigner.core.GridConstraints;
-import com.intellij.uiDesigner.core.GridLayoutManager;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.UUID;
+
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.uiDesigner.core.GridLayoutManager;
 
 public class ChatGUI {
     private static final Logger log = LogManager.getLogger(ChatGUI.class);
@@ -27,8 +39,8 @@ public class ChatGUI {
     public ChatGUI(String host, int port) throws IOException {
         this.host = host;
         this.port = port;
-        this.chatClient = new ChatClient(host, port, this::onMessageReceive);
-        this.chatClient.startListen();
+        this.chatClient = new ChatClient(this::onMessageReceive);
+        this.chatClient.connect(host, port, UUID.randomUUID().toString());
 
         sendButton.addActionListener(new ActionListener() {
             @Override
