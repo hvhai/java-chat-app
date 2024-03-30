@@ -1,18 +1,31 @@
 package com.codehunter.java_chat_app.client;
 
-import com.intellij.uiDesigner.core.GridConstraints;
-import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.intellij.uiDesigner.core.Spacer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.codehunter.java_chat_app.exception.ValidationException;
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.intellij.uiDesigner.core.Spacer;
 
 public class ChatGUI {
     private static final Logger log = LogManager.getLogger(ChatGUI.class);
@@ -59,8 +72,10 @@ public class ChatGUI {
                     host = hostTextField.getText();
                     port = Integer.parseInt(portTextField.getText());
                     chatClient.connect(host, port, usernameTextField.getText());
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+                } catch (IOException | ValidationException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(rootPanel, ex.getMessage(), "Connection error", JOptionPane.ERROR_MESSAGE);
+                    // System.exit(1);
                 }
             }
         });

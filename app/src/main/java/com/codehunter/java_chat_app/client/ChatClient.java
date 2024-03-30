@@ -9,8 +9,11 @@ import java.net.Socket;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.codehunter.java_chat_app.exception.ValidationException;
 
 class ChatClient implements Closeable {
 
@@ -25,7 +28,10 @@ class ChatClient implements Closeable {
         this.onMessageListener = onMessageListener;
     }
 
-    public void connect(String host, int port, String username) throws IOException {
+    public void connect(String host, int port, String username) throws IOException, ValidationException {
+        if (StringUtils.isBlank(host) || port < 0 || StringUtils.isBlank(username)) {
+            throw new ValidationException("Missing config, please checking again");
+        }
         this.username = username;
         this.socket = new Socket(host, port);
         this.socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));

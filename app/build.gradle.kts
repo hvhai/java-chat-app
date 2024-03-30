@@ -17,7 +17,12 @@ repositories {
 }
 
 dependencies {
+    // Commons utils
+    implementation("org.apache.commons:commons-lang3:3.14.0")
+
+    // GUI
     implementation("com.intellij:forms_rt:7.0.3")
+
     // Logging
     implementation("org.apache.logging.log4j:log4j-api:2.22.1")
     implementation("org.apache.logging.log4j:log4j-core:2.22.1")
