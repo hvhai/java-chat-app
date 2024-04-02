@@ -70,7 +70,8 @@ class ChatServer {
         }
 
         public void notify(String message) {
-            this.writer.println(">" + Thread.currentThread().getName() + ": " + message);
+            // this.writer.println(">" + Thread.currentThread().getName() + ": " + message);
+            this.writer.println(message);
         }
     }
 
